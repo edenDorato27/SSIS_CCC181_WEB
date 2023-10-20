@@ -63,7 +63,7 @@ def search_student():
         search_query = request.form.get('searchTerm')  # Updated to 'searchTerm'
         # Perform a database query based on the search_query
         search_results = studModel.Student.search_student(search_query)
-        return jsonify(results=search_results)
+        return jsonify(search_results)
     except Exception as e:
         # Handle errors and return an error response
         return jsonify(error=str(e)), 500

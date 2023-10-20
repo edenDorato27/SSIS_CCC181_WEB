@@ -117,52 +117,68 @@
           });
       });
 
-      // Add a click event listener to the "Search" button
       $("#search-button").click(function() {
         const searchTerm = $("#search-input").val(); // Get the search term from the input field
-
+    
         // Make an AJAX request to the search endpoint
         $.ajax({
-            type: "POST", // You can use POST or GET, depending on your server implementation
+            type: "POST",
             url: "/student/search", // Replace with the actual endpoint URL
             headers: {
                 "X-CSRFToken": "{{ csrf_token() }}", // Include the CSRF token in the headers
             },
             data: { searchTerm: searchTerm }, // Send the search term as data
             success: function(response) {
-                // Handle the response and update the table with the search results
-                updateTable(response);
+                // Check if the response is an array before calling updateTable
+                if (Array.isArray(response)) {
+                    updateTable(response);
+                } else {
+                    console.error("Invalid response format. Expected an array.");
+                    alert("Invalid response format. Please check the server response.");
+                }
             },
             error: function() {
                 console.error("Error while making the search request");
                 alert("Error while making the search request");
             }
         });
-      });
+    });
+    
+          function updateTable(data) {
+              console.log("Response received:", data);
+          
+              // Clear the existing table rows
+              $("tbody").empty();
+          
+              // Loop through the data and add new rows to the table
+              for (let info of data) {
+                  console.log("Row data:", info);  // Log each row's data
+          
+                  // Create a new row and append it to the table
+                  let newRow = $("<tr class='table__row'></tr>");
+                  newRow.append("<td>" + info[0] + "</td>");
+                  newRow.append("<td>" + info[1] + "</td>");
+                  newRow.append("<td>" + info[2] + "</td>");
+                  newRow.append("<td>" + info[3] + "</td>");
+                  newRow.append("<td>" + info[4] + "</td>");
+                  newRow.append("<td>" + info[5] + "</td>");
 
-      function updateTable(data) {
-        console.log("Response received:", data);
-    
-        // Clear the existing table rows
-        $("tbody").empty();
-    
-        // Loop through the data and add new rows to the table
-        for (let info of data) {
-            console.log("Row data:", info);  // Log each row's data
-    
-            // Create a new row and append it to the table
-            let newRow = $("<tr class='table__row'></tr>");
-            newRow.append("<td>" + info[0] + "</td>");
-            newRow.append("<td>" + info[1] + "</td>");
-            newRow.append("<td>" + info[2] + "</td>");
-            newRow.append("<td>" + info[3] + "</td>");
-            newRow.append("<td>" + info[4] + "</td>");
-            newRow.append("<td>" + info[5] + "</td>");
-    
-            $("tbody").append(newRow);
-        }
-    }  
-  });
+                  // Create the buttons
+                  let editButton = $("<button type='button' class='btn btn-warning' style='background-color: #4895EF; color: #FFFFFF; border-color: #4895EF;'>Edit</button>");
+                  let deleteButton = $("<button type='button' class='btn btn-danger delete-student-button' data-id='" + info[0] + "'>Delete</button>");
+
+                  // Create a cell for the buttons and append them
+                  let buttonCell = $("<td class='table__cell'></td>");
+                  buttonCell.append(editButton);
+                  buttonCell.append("&nbsp;"); // Add a space between buttons
+                  buttonCell.append(deleteButton);
+
+                  newRow.append(buttonCell);
+                  
+                  $("tbody").append(newRow);
+              }
+          }
+      });
 </script>
 
 {% endblock %}

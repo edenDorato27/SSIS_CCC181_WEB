@@ -8,6 +8,13 @@ instance/*
 .env
 .flaskenv
 
+# Ignore the 'virt' folder
+virt/
+
+# Ignore the 'testkey.pub' and 'testkey' files
+testkey.pub
+testkey
+
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
