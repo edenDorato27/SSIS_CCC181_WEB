@@ -26,16 +26,17 @@ class College(object):
         return result
 
     @classmethod
-    def delete(cls,college_code):
+    def delete(cls, college_code):
         try:
             cursor = mysql.connection.cursor()
-            sql = f"DELETE from college where college_code= {college_code}"
-            cursor.execute(sql)
+            sql = "DELETE from college where college_code = %s"
+            cursor.execute(sql, (college_code,))
             mysql.connection.commit()
             return True
-        except:
+        except mysql.connector.Error as e:
+            print(f"Error: {e}")
             return False
-  
+
     @classmethod
     def update(cls, college_code, new_college_name):
         try:
@@ -59,7 +60,7 @@ class College(object):
         except Exception as e:
             print(f"Error: {e}")
             return []
-        
+      
         
         
     
