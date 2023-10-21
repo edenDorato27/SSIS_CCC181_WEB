@@ -61,14 +61,6 @@ def edit_college():
 
     return render_template("edit_college.html", form=form, info=college_data_dict)
 
-@classmethod
-def get_college_by_id(cls, college_code):
-        cursor = mysql.connection.cursor(dictionary=True)  # Set dictionary=True to return results as dictionaries
-        cursor.execute("SELECT * FROM college WHERE college_code = %s", (college_code,))
-        college_data = cursor.fetchone()
-        cursor.close()
-        return college_data
-
 @college_bp.route("/college/delete", methods=["POST"])
 def delete_college():
     try:

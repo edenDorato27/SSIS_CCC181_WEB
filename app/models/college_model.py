@@ -26,7 +26,7 @@ class College(object):
     def delete(cls, college_code):
         try:
             cursor = mysql.connection.cursor()
-            sql = f"DELETE from college where college_code = {college_code}"
+            sql = f"DELETE from college where college_code = '{college_code}'"
             cursor.execute(sql)
             mysql.connection.commit()
             return True
