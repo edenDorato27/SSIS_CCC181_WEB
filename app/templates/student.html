@@ -34,7 +34,7 @@
             <td>{{ info[4] }}</td>
             <td>{{ info[5] }}</td>
             <td class="table__cell">
-              <button type="button" class="btn btn-warning" style="background-color: #4895EF; color:#FFFFFF; border-color: #4895EF;">Edit</button>
+              <a href="{{ url_for('student.edit_student', id_number=info[0]) }}" class="btn btn-warning" style="background-color: #4895EF; color:#FFFFFF; border-color: #4895EF">Edit</a>
               <button type="button" class="btn btn-danger delete-student-button" data-id="{{ info[0] }}">Delete</button>
             </td>
           </tr>
@@ -117,6 +117,14 @@
           });
       });
 
+      $(document).on("click", ".edit-student-button", function() {
+          // Get the ID of the student associated with the clicked "Edit" button
+          const studentId = $(this).closest("tr").find("td:first-child").text(); // Assuming the ID is in the first <td> of the row
+      
+          // Redirect to the edit page with the student ID
+          window.location.href = "/student/edit?id_number=" + studentId;
+      });
+
       $("#search-button").click(function() {
         const searchTerm = $("#search-input").val(); // Get the search term from the input field
     
@@ -164,7 +172,7 @@
               newRow.append("<td>" + info[5] + "</td>");
               
               // Create the buttons
-              let editButton = $("<button type='button' class='btn btn-warning' style='background-color: #4895EF; color: #FFFFFF; border-color: #4895EF;'>Edit</button>");
+              let editButton = $("<button type='button' class='btn btn-warning' style='background-color: #4895EF; color: #FFFFFF; border-color: #4895EF; edit-student-button'>Edit</button>");
               let deleteButton = $("<button type='button' class='btn btn-danger delete-student-button' data-id='" + info[0] + "'>Delete</button>");
               
               // Create a cell for the buttons and append them

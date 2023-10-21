@@ -39,10 +39,41 @@ def add():
     
     return render_template('add_student.html', form=form)
 
-@student_bp.route('/student/update/', methods=["GET", "POST"])
-def update_student():
+@student_bp.route('/student/edit', methods=["GET", "POST"])
+def edit_student():
+    id_number = request.args.get('id_number')
     form = StudentForm()
-    first_name_update = studModel.Student.update()
+    student_data = studModel.Student.get_student_by_id(id_number)
+
+    if student_data:
+        # Ensure that student_data is not empty before accessing elements
+        student_data_dict = {
+            "id_number": student_data['id_number'],
+            "first_name": student_data['first_name'],
+            "last_name": student_data['last_name'],
+            "course_code": student_data['course_code'],
+            "year_": student_data['year_'],
+            "gender": student_data['gender']
+        }
+    else:
+        # Handle the case where no student data was found
+        flash("Student not found.", "error")
+        return redirect(url_for("student.student"))
+
+    if request.method == "POST" and form.validate():
+        new_first_name = form.first_name.data
+        new_last_name = form.last_name.data
+        new_course_code = form.course_code.data
+        new_year = form.year_.data
+        new_gender = form.gender.data
+
+        if studModel.Student.update(id_number, new_first_name, new_last_name, new_course_code, new_year, new_gender):
+            flash("Student information updated successfully!", "success")
+            return redirect(url_for("student.student"))
+        else:
+            flash("Failed to update student information.", "error")
+
+    return render_template("edit_student.html", form=form, info=student_data_dict)
 
 @student_bp.route("/student/delete", methods=["POST"])
 def delete_student():

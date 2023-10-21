@@ -71,15 +71,38 @@ class Student(object):
   
     @classmethod
     def update(cls, id_number, new_first_name, new_last_name, new_course_code, new_year_, new_gender):
+        """
+        Update the student's information in the database.
+
+        Args:
+            id_number (str): The ID number of the student to be updated.
+            new_first_name (str): The new first name.
+            new_last_name (str): The new last name.
+            new_course_code (str): The new course code.
+            new_year_ (int): The new year.
+            new_gender (str): The new gender.
+
+        Returns:
+            bool: True if the update was successful, False otherwise.
+        """
         try:
-            with mysql.connection.cursor() as cursor:
-                sql = "UPDATE student SET first_name = %s, last_name = %s, course_code = %s, year_ = %s, gender = %s WHERE id_number = %s"
-                cursor.execute(sql, (new_first_name, new_last_name, new_course_code, new_year_, new_gender, id_number))
-                mysql.connection.commit()
-                return True
+            cursor = mysql.connection.cursor()
+            sql = "UPDATE student SET first_name = %s, last_name = %s, course_code = %s, year_ = %s, gender = %s WHERE id_number = %s"
+            cursor.execute(sql, (new_first_name, new_last_name, new_course_code, new_year_, new_gender, id_number))
+            mysql.connection.commit()
+            return True
         except Exception as e:
-            print(f"Error: {e}")
+            # You might want to log this error for debugging purposes
+            print(f"Error updating student: {e}")
             return False
+
+    @classmethod
+    def get_student_by_id(cls, id_number):
+        cursor = mysql.connection.cursor(dictionary=True)  # Set dictionary=True to return results as dictionaries
+        cursor.execute("SELECT * FROM student WHERE id_number = %s", (id_number,))
+        student_data = cursor.fetchone()
+        cursor.close()
+        return student_data
     
     @classmethod
     def search_student(cls, query):
