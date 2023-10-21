@@ -44,6 +44,14 @@ class College(object):
         except Exception as e:
             print(f"Error: {e}")
             return False
+        
+    @classmethod
+    def get_college_by_id(cls, college_code):
+        cursor = mysql.connection.cursor(dictionary=True)  # Set dictionary=True to return results as dictionaries
+        cursor.execute("SELECT * FROM college WHERE college_code = %s", (college_code,))
+        college_data = cursor.fetchone()
+        cursor.close()
+        return college_data
 
     @classmethod
     def search_college(cls, query):

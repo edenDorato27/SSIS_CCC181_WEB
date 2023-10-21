@@ -12,9 +12,9 @@ def home_page():
 @college_bp.route('/college')
 def college():
     college_info = collegeModel.College.all()
-    return render_template('college.html', headings = headings, data = college_info)
+    return render_template('college.html', headings=headings, data=college_info)
 
-@college_bp.route('/college/add', methods=['POST','GET'])
+@college_bp.route('/college/add', methods=['POST', 'GET'])
 def add():
     form = CollegeForm(request.form)
     
@@ -23,7 +23,7 @@ def add():
         college_exists = collegeModel.College.unique_code(check_id)
 
         if college_exists:
-            flash("Course_code already exists! Please enter a unique Course_code", 'error')
+            flash("College code already exists! Please enter a unique College code", 'error')
         else:
             college = collegeModel.College(
                 college_code=check_id,
@@ -42,13 +42,11 @@ def edit_college():
     college_data = collegeModel.College.get_college_by_id(college_code)
 
     if college_data:
-        # Ensure that student_data is not empty before accessing elements
         college_data_dict = {
-            "college_code": college_data['college'],
+            "college_code": college_data['college_code'],  # Fixed the attribute name
             "college_name": college_data['college_name'],
         }
     else:
-        # Handle the case where no student data was found
         flash("College not found.", "error")
         return redirect(url_for("college.college"))
 
@@ -61,7 +59,15 @@ def edit_college():
         else:
             flash("Failed to update college information.", "error")
 
-    return render_template("edit_student.html", form=form, info=college_data_dict)
+    return render_template("edit_college.html", form=form, info=college_data_dict)
+
+@classmethod
+def get_college_by_id(cls, college_code):
+        cursor = mysql.connection.cursor(dictionary=True)  # Set dictionary=True to return results as dictionaries
+        cursor.execute("SELECT * FROM college WHERE college_code = %s", (college_code,))
+        college_data = cursor.fetchone()
+        cursor.close()
+        return college_data
 
 @college_bp.route("/college/delete", methods=["POST"])
 def delete_college():
@@ -72,15 +78,13 @@ def delete_college():
         else:
             return jsonify(success=False, message="Failed")
     except Exception as e:
-        # Log the error for debugging purposes
         college_bp.logger.error("An error occurred: %s" % str(e))
         return jsonify(success=False, message="Internal Server Error"), 500
 
 @college_bp.route('/college/search', methods=['POST'])
 def search_college():
     try:
-        search_query = request.form.get('searchTerm')  # Updated to 'searchTerm'
-        # Perform a database query based on the search_query
+        search_query = request.form.get('searchTerm')
         search_results = collegeModel.College.search_college(search_query)
         
         if search_results is not None:
@@ -88,6 +92,4 @@ def search_college():
         else:
             return jsonify([])
     except Exception as e:
-        # Handle errors and return an error response
         return jsonify(error=str(e)), 500
-
