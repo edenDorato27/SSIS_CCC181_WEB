@@ -1,6 +1,5 @@
 from app import mysql
 
-
 class College(object):
 
     def __init__(self, college_code=None, college_name=None):
@@ -10,9 +9,7 @@ class College(object):
     def add(self):
         cursor = mysql.connection.cursor()
 
-        sql = f"INSERT INTO college(college_code,college_name) \
-                VALUES('{self.college_code}','{self.college_name}')" 
-
+        sql = f"INSERT INTO college(college_code, college_name) VALUES ('{self.college_code}', '{self.college_name}')"
         cursor.execute(sql)
         mysql.connection.commit()
 
@@ -29,12 +26,11 @@ class College(object):
     def delete(cls, college_code):
         try:
             cursor = mysql.connection.cursor()
-            sql = "DELETE from college where college_code = %s"
-            cursor.execute(sql, (college_code,))
+            sql = f"DELETE from college where college_code = {college_code}"
+            cursor.execute(sql)
             mysql.connection.commit()
             return True
-        except mysql.connector.Error as e:
-            print(f"Error: {e}")
+        except:
             return False
 
     @classmethod
@@ -48,7 +44,7 @@ class College(object):
         except Exception as e:
             print(f"Error: {e}")
             return False
-    
+
     @classmethod
     def search_college(cls, query):
         try:
@@ -60,9 +56,11 @@ class College(object):
         except Exception as e:
             print(f"Error: {e}")
             return []
-      
-        
-        
-    
 
-        
+    @classmethod
+    def unique_code(cls, college_code):
+        cursor = mysql.connection.cursor()
+        sql = "SELECT college_code FROM college WHERE college_code = %s"
+        cursor.execute(sql, (college_code,))
+        result = cursor.fetchone()
+        return result is not None

@@ -30,7 +30,7 @@ def add():
                 college_name=form.college_name.data,
             )
             college.add()
-            flash("Student added successfully!", 'success')
+            flash("College added successfully!", 'success')
             return redirect(url_for('college.college'))
     
     return render_template('add_college.html', form=form)
