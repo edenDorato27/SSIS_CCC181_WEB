@@ -7,15 +7,6 @@
     background-color: #e1affd;
 }
   
-.table__header {
-    text-align: center;
-}
-  
-.table__cell {
-    text-align: center;
-    padding: 8px;
-}
-  
 .spaced-button {
     margin-right: 0px;
 }

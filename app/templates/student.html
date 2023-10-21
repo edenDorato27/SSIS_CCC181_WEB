@@ -75,8 +75,8 @@
           window.location.href = "/student/add";
       });
 
-      // Add a click event listener to the "Delete" button to show the confirmation modal
-      $(".delete-student-button").click(function() {
+      // Modify the event listener for the delete button using event delegation
+      $(document).on("click", ".delete-student-button", function() {
           const studentId = $(this).data("id");
           console.log("Button clicked with ID: " + studentId);
           
@@ -144,41 +144,41 @@
         });
     });
     
-          function updateTable(data) {
-              console.log("Response received:", data);
+      function updateTable(data) {
+          console.log("Response received:", data);
           
-              // Clear the existing table rows
-              $("tbody").empty();
+          // Clear the existing table rows
+          $("tbody").empty();
           
-              // Loop through the data and add new rows to the table
-              for (let info of data) {
-                  console.log("Row data:", info);  // Log each row's data
-          
-                  // Create a new row and append it to the table
-                  let newRow = $("<tr class='table__row'></tr>");
-                  newRow.append("<td>" + info[0] + "</td>");
-                  newRow.append("<td>" + info[1] + "</td>");
-                  newRow.append("<td>" + info[2] + "</td>");
-                  newRow.append("<td>" + info[3] + "</td>");
-                  newRow.append("<td>" + info[4] + "</td>");
-                  newRow.append("<td>" + info[5] + "</td>");
-
-                  // Create the buttons
-                  let editButton = $("<button type='button' class='btn btn-warning' style='background-color: #4895EF; color: #FFFFFF; border-color: #4895EF;'>Edit</button>");
-                  let deleteButton = $("<button type='button' class='btn btn-danger delete-student-button' data-id='" + info[0] + "'>Delete</button>");
-
-                  // Create a cell for the buttons and append them
-                  let buttonCell = $("<td class='table__cell'></td>");
-                  buttonCell.append(editButton);
-                  buttonCell.append("&nbsp;"); // Add a space between buttons
-                  buttonCell.append(deleteButton);
-
-                  newRow.append(buttonCell);
-                  
-                  $("tbody").append(newRow);
-              }
+          // Loop through the data and add new rows to the table
+          for (let info of data) {
+              console.log("Row data:", info);  // Log each row's data
+              
+              // Create a new row and append it to the table
+              let newRow = $("<tr class='table__row'></tr>");
+              newRow.append("<td>" + info[0] + "</td>");
+              newRow.append("<td>" + info[1] + "</td>");
+              newRow.append("<td>" + info[2] + "</td>");
+              newRow.append("<td>" + info[3] + "</td>");
+              newRow.append("<td>" + info[4] + "</td>");
+              newRow.append("<td>" + info[5] + "</td>");
+              
+              // Create the buttons
+              let editButton = $("<button type='button' class='btn btn-warning' style='background-color: #4895EF; color: #FFFFFF; border-color: #4895EF;'>Edit</button>");
+              let deleteButton = $("<button type='button' class='btn btn-danger delete-student-button' data-id='" + info[0] + "'>Delete</button>");
+              
+              // Create a cell for the buttons and append them
+              let buttonCell = $("<td class='table__cell'></td>");
+              buttonCell.append(editButton);
+              buttonCell.append("&nbsp;"); // Add a space between buttons
+              buttonCell.append(deleteButton);
+              
+              newRow.append(buttonCell);
+              
+              $("tbody").append(newRow);
           }
-      });
+      }
+  });
 </script>
 
 {% endblock %}
