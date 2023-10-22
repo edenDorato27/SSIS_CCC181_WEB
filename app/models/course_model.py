@@ -41,7 +41,7 @@ class Course(object):
     def update(cls, course_code, new_course_name, new_college_code):
         try:
             with mysql.connection.cursor() as cursor:
-                sql = "UPDATE course SET course_name = %s, college_code = %s WHERE course_code = %s"
+                sql = "UPDATE course SET course_name = %s, course_code = %s WHERE course_code = %s"
                 cursor.execute(sql, (new_course_name, new_college_code, course_code))
                 mysql.connection.commit()
                 return True
@@ -60,6 +60,22 @@ class Course(object):
         except Exception as e:
             print(f"Error: {e}")
             return []
+        
+    @classmethod
+    def get_course_by_id(cls, course_code):
+        cursor = mysql.connection.cursor(dictionary=True)  # Set dictionary=True to return results as dictionaries
+        cursor.execute("SELECT * FROM course WHERE course_code = %s", (course_code,))
+        course_data = cursor.fetchone()
+        cursor.close()
+        return course_data
+    
+    @classmethod
+    def unique_code(cls, course_code):
+        cursor = mysql.connection.cursor()
+        sql = "SELECT course_code FROM course WHERE course_code = %s"
+        cursor.execute(sql, (course_code,))
+        result = cursor.fetchone()
+        return result is not None
         
         
         
