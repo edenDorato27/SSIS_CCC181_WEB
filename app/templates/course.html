@@ -97,7 +97,7 @@
               headers: {
                   "X-CSRFToken": "{{ csrf_token() }}",  // Include the CSRF token in the headers
               },
-              data: { college_code: collegeId },
+              data: { course_code: courseId },
               success: function(response) {
                   console.log("Delete request successful");
                   if (response.success) {

@@ -11,7 +11,7 @@ class Course(object):
     def add(self):
         cursor = mysql.connection.cursor()
 
-        sql = f"INSERT INTO course(course_code,course_name, college_code) \
+        sql = f"INSERT INTO course(course_code, course_name, college_code) \
                 VALUES('{self.course_code}','{self.course_name}','{self.college_code}')" 
 
         cursor.execute(sql)
@@ -26,29 +26,41 @@ class Course(object):
         result = cursor.fetchall()
         return result
 
+    
     @classmethod
-    def delete(cls,course_code):
+    def delete(cls, course_code):
+        """
+        Delete a course from the database.
+
+        Args:
+            course_code (str): The course_code of the course to be deleted.
+
+        Returns:
+            bool: True if the deletion was successful, False otherwise.
+        """
         try:
             cursor = mysql.connection.cursor()
-            sql = f"DELETE from course where course_code= {course_code}"
-            cursor.execute(sql)
+            sql = "DELETE FROM course WHERE course_code = %s"
+            cursor.execute(sql, (course_code,))
             mysql.connection.commit()
             return True
-        except:
+        except Exception as e:
+            # You might want to log this error for debugging purposes
+            print(f"Error deleting course: {e}")
             return False
   
     @classmethod
     def update(cls, course_code, new_course_name, new_college_code):
         try:
             with mysql.connection.cursor() as cursor:
-                sql = "UPDATE course SET course_name = %s, course_code = %s WHERE course_code = %s"
+                sql = "UPDATE course SET course_name = %s, college_code = %s WHERE course_code = %s"
                 cursor.execute(sql, (new_course_name, new_college_code, course_code))
                 mysql.connection.commit()
                 return True
         except Exception as e:
             print(f"Error: {e}")
             return False
-    
+
     @classmethod
     def search_course(cls, query):
         try:
