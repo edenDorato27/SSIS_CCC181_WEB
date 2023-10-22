@@ -11,3 +11,30 @@
     margin-right: 0px;
 }
 
+#popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #CA8DFD; /* Background color of the message */
+    color: rgb(0, 0, 0); /* Text color of the message */
+    text-align: center;
+    padding: 10px;
+    z-index: 1000; /* Make sure it's above other elements */
+    font-family: 'Montserrat';
+    font-weight: bold;
+  }
+  
+  .alert-success {
+    background-color: #eff4af; /* Green background for success message */
+  }
+  
+  .alert-error {
+    background-color: #DC3545; /* Red background for error message */
+  }
+  
+  /* Style the close button (if needed) */
+  #popup .btn-close {
+    color: white;
+  }
