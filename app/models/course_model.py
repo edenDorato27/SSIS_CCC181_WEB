@@ -88,6 +88,18 @@ class Course(object):
         cursor.execute(sql, (course_code,))
         result = cursor.fetchone()
         return result is not None
+    
+    @classmethod
+    def get_college_code(cls):
+        try:
+            cursor = mysql.connection.cursor(dictionary=True)  # Set dictionary=True to return results as dictionaries
+            cursor.execute("SELECT college_code FROM college")
+            all_colleges = cursor.fetchall()
+            cursor.close()
+            return all_colleges
+        except Exception as e:
+            print(f"Error obtaining college_code: {e}")
+            return False
         
         
         

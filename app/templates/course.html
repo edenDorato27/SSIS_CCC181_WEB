@@ -66,121 +66,121 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  $(document).ready(function() {
-      // Add a click event listener to the "Add" button
-      $("#add-course-button").click(function() {
-          window.location.href = "/course/add";
-      });
-
-      // Modify the event listener for the delete button using event delegation
-      $(document).on("click", ".delete-course-button", function() {
-          const courseId = $(this).data("id");
-          console.log("Button clicked with ID: " + courseId);
-          
-          // Set the data-id attribute of the confirm delete button in the modal
-          $("#confirmDeleteButton").data("id", courseId);
-
-          // Show the confirmation modal
-          $("#deleteConfirmationModal").modal('show');
-      });
-
-      // Add a click event listener to the confirm delete button in the modal
-      $("#confirmDeleteButton").click(function() {
-          const courseId = $(this).data("id");
-
-          // Close the modal
-          $("#deleteConfirmationModal").modal('hide');
-
-          $.ajax({
-              type: "POST",
-              url: "/course/delete",
-              headers: {
-                  "X-CSRFToken": "{{ csrf_token() }}",  // Include the CSRF token in the headers
-              },
-              data: { course_code: courseId },
-              success: function(response) {
-                  console.log("Delete request successful");
-                  if (response.success) {
-                      alert("Successfully deleted");
-                      window.location.reload();  // Refresh the page after a successful delete
-                  } else {
-                      alert("Failed to delete");
-                  }
-              },
-              error: function() {
-                  console.error("Error while making the request");
-                  alert("Error while making the request");
-              }
-          });
-      });
-
-      $(document).on("click", ".edit-course-button", function() {
-          // Get the ID of the student associated with the clicked "Edit" button
-          const courseId = $(this).closest("tr").find("td:first-child").text(); // Assuming the ID is in the first <td> of the row
-      
-          // Redirect to the edit page with the student ID
-          window.location.href = "/college/edit?course_code=" + courseId;
-      });
-
-      $("#search-button").click(function() {
-        const searchTerm = $("#search-input").val(); // Get the search term from the input field
-    
-        // Make an AJAX request to the search endpoint
-        $.ajax({
-            type: "POST",
-            url: "/course/search", // Replace with the actual endpoint URL
-            headers: {
-                "X-CSRFToken": "{{ csrf_token() }}", // Include the CSRF token in the headers
-            },
-            data: { searchTerm: searchTerm }, // Send the search term as data
-            success: function(response) {
-                // Check if the response is an array before calling updateTable
-                if (Array.isArray(response)) {
-                    updateTable(response);
-                } else {
-                    console.error("Invalid response format. Expected an array.");
-                    alert("Invalid response format. Please check the server response.");
-                }
-            },
-            error: function() {
-                console.error("Error while making the search request");
-                alert("Error while making the search request");
-            }
+    $(document).ready(function() {
+        // Add a click event listener to the "Add" button
+        $("#add-course-button").click(function() {
+            window.location.href = "/course/add";
         });
+
+        // Modify the event listener for the delete button using event delegation
+        $(document).on("click", ".delete-button", function() {
+            const courseID = $(this).data("id");
+            console.log("Button clicked with ID: " + courseID);
+
+            // Set the data-id attribute of the confirm delete button in the modal
+            $("#confirmDeleteButton").data("id", courseID);
+
+            // Show the confirmation modal
+            $("#deleteConfirmationModal").modal('show');
+        });
+
+        // Add a click event listener to the confirm delete button in the modal
+        $("#confirmDeleteButton").click(function() {
+            const courseID = $(this).data("id");
+
+            // Close the modal
+            $("#deleteConfirmationModal").modal('hide');
+
+            $.ajax({
+                type: "POST",
+                url: "/course/delete",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token() }}", // Include the CSRF token in the headers
+                },
+                data: { course_code: courseID },
+                success: function(response) {
+                    console.log("Delete request successful");
+                    if (response.success) {
+                        alert("Successfully deleted");
+                        window.location.reload(); // Refresh the page after a successful delete
+                    } else {
+                        alert("Failed to delete");
+                    }
+                },
+                error: function() {
+                    console.error("Error while making the request");
+                    alert("Error while making the request");
+                }
+            });
+        });
+
+        $(document).on("click", ".edit-course-button", function() {
+            // Get the code of the course associated with the clicked "Edit" button
+            const courseID = $(this).closest("tr").find("td:first-child").text(); // Assuming the course is in the first <code> of the row
+        
+            // Redirect to the edit page with the course_code
+            window.location.href = "/course/edit?course_code=" + courseID;
+        });        
+
+        $("#search-button").click(function() {
+            const searchTerm = $("#search-input").val(); // Get the search term from the input field
+        
+            // Make an AJAX request to the search endpoint
+            $.ajax({
+                type: "POST",
+                url: "/course/search",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token() }}", // Include the CSRF token in the headers
+                },
+                data: { searchTerm: searchTerm },
+                success: function(response) {
+                    if (Array.isArray(response)) {
+                        updateTable(response);
+                    } else {
+                        console.error("Invalid response format. Expected an array.");
+                        alert("Invalid response format. Please check the server response.");
+                    }
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error("Error while making the search request:", textStatus, errorThrown);
+                    alert("Error while making the search request. Please check the server response.");
+                }
+            });
+        });
+        
+
+        function updateTable(data) {
+            console.log("Response received:", data);
+
+            // Clear the existing table rows
+            $("tbody").empty();
+
+            // Loop through the data and add new rows to the table
+            for (let info of data) {
+                console.log("Row data:", info); // Log each row's data
+
+                // Create a new row and append it to the table
+                let newRow = $("<tr class='table__row'></tr>");
+                newRow.append("<td>" + info[0] + "</td>");
+                newRow.append("<td>" + info[1] + "</td>");
+                newRow.append("<td>" + info[2] + "</td>");
+
+                // Create the buttons
+                let editButton = $("<button type='button' class='btn btn-primary edit-course-button'>Edit</button>");
+                let deleteButton = $("<button type='button' class='btn btn-danger delete-button' data-id='" + info[0] + "'>Delete</button>");
+
+                // Create a cell for the buttons and append them
+                let buttonCell = $("<td class='table__cell'></td>");
+                buttonCell.append(editButton);
+                buttonCell.append("&nbsp;"); // Add a space between buttons
+                buttonCell.append(deleteButton);
+
+                newRow.append(buttonCell);
+
+                $("tbody").append(newRow);
+            }
+        }
     });
-    
-      function updateTable(data) {
-          console.log("Response received:", data);
-          
-          // Clear the existing table rows
-          $("tbody").empty();
-          
-          // Loop through the data and add new rows to the table
-          for (let info of data) {
-              console.log("Row data:", info);  // Log each row's data
-              
-              // Create a new row and append it to the table
-              let newRow = $("<tr class='table__row'></tr>");
-              newRow.append("<td>" + info[0] + "</td>");
-              newRow.append("<td>" + info[1] + "</td>");
-              newRow.append("<td>" + info[2] + "</td>");
-              
-              // Create the buttons
-              let editButton = $("<button type='button' class='btn btn-warning' style='background-color: #4895EF; color: #FFFFFF; border-color: #4895EF; edit-course-button'>Edit</button>");
-              let deleteButton = $("<button type='button' class='btn btn-danger delete-course-button' data-id='" + info[0] + "'>Delete</button>");
-              
-              // Create a cell for the buttons and append them
-              let buttonCell = $("<td class='table__cell'></td>");
-              buttonCell.append(editButton);
-              buttonCell.append("&nbsp;"); // Add a space between buttons
-              buttonCell.append(deleteButton);
-              
-              newRow.append(buttonCell);
-              
-              $("tbody").append(newRow);
-          }
-      }
-  });
 </script>
 
 {% endblock %}

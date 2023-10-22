@@ -17,6 +17,7 @@ def course():
 @course_bp.route('/course/add', methods=['POST','GET'])
 def add():
     form = CourseForm(request.form)
+    college_code = courseModel.Course.get_college_code()
     
     if request.method == 'POST' and form.validate():
         check_id = form.course_code.data
@@ -35,7 +36,7 @@ def add():
             flash("Course added successfully!", 'success')
             return redirect(url_for('course.course'))
     
-    return render_template('add_course.html', form=form)
+    return render_template('add_course.html', form=form, college=college_code)
 
 @course_bp.route('/course/edit', methods=["GET", "POST"])
 def edit_course():

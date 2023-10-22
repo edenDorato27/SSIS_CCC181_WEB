@@ -115,6 +115,18 @@ class Student(object):
         except Exception as e:
             print(f"Error: {e}")
             return []
+    
+    @classmethod
+    def get_course_code(cls):
+        try:
+            cursor = mysql.connection.cursor(dictionary=True)  # Set dictionary=True to return results as dictionaries
+            cursor.execute("SELECT course_code FROM course")
+            all_colleges = cursor.fetchall()
+            cursor.close()
+            return all_colleges
+        except Exception as e:
+            print(f"Error obtaining college_code: {e}")
+            return False
 
     
         

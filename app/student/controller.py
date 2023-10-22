@@ -17,6 +17,7 @@ def student():
 @student_bp.route('/student/add', methods=['POST','GET'])
 def add():
     form = StudentForm(request.form)
+    course_code = studModel.Student.get_course_code()
     
     if request.method == 'POST' and form.validate():
         check_id = form.id_number.data
@@ -37,7 +38,7 @@ def add():
             flash("Student added successfully!", 'success')
             return redirect(url_for('student.student'))
     
-    return render_template('add_student.html', form=form)
+    return render_template('add_student.html', form=form, course=course_code)
 
 @student_bp.route('/student/edit', methods=["GET", "POST"])
 def edit_student():
