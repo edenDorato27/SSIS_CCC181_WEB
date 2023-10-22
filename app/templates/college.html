@@ -7,16 +7,24 @@
     </head>
 {% extends 'base.html' %}
 {% block content %}
+
+{%for message in get_flashed_messages() %}
+        <div class="alert alert-dismissible fade show" style="background-color: #CA8DFD; color:#FFFFFF; border-color: #CA8DFD" role="alert">
+            <strong>{{ message }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
 <body>
   <form class="d-flex" role="search">
     <input id="search-input" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-    <button id="search-button" class="btn btn-outline-success spaced-button" style="background-color: #357A38; color:#FFFFFF; border-color: #357A38; width:10%" type="button">Search</button>
+    <button id="search-button" class="btn btn-outline-success spaced-button" style="background-color: #075A3A; color:#FFFFFF; border-color: #075A3A; width:10%" type="button">Search</button>
     <div class="mx-2"></div>
     <button class="btn btn-outline-success spaced-button" style="background-color: #541675; color:#FFFFFF; border-color: #541675; width:10%" type="button" id="add-college-button">Add</button>
   </form>  
   <br/>
   <div style="height:500px; overflow:auto">
-    <table class="table table-striped table-hover" style="height:400px">
+    <table class="table table-striped table-hover">
       <thead style="position:sticky; top:0">
         <tr>
           {% for header in headings %}
