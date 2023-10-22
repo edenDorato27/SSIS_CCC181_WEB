@@ -57,8 +57,8 @@ class College(object):
     def search_college(cls, query):
         try:
             with mysql.connection.cursor() as cursor:
-                sql = "SELECT * FROM college WHERE college_code LIKE %s OR college_name LIKE %s"
-                cursor.execute(sql, (f"%{query}%", f"%{query}%"))
+                sql = "SELECT * FROM college WHERE college_code = %s OR college_name = %s"
+                cursor.execute(sql, (query, query))
                 result = cursor.fetchall()
                 return result
         except Exception as e:
