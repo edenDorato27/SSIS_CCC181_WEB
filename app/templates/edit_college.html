@@ -10,7 +10,7 @@
     <form class="row g-3 needs-validation" method="POST" action="{{ url_for('college.edit_college', college_code=info.college_code) }}" novalidate>
         <!-- Include the ID number as part of the action URL -->
         <!-- ID Number -->
-        <div class="col-md-4">
+        <div class="col-md-6">
             <label for="validationCustom01" class="form-label">College code</label>
             <input type="text" class="form-control" id="validationCustom01" name="college_code" required value="{{ info.college_code }}" readonly>
             <div class="valid-feedback">
@@ -22,7 +22,7 @@
         </div>
         
         <!-- First Name -->
-        <div class="col-md-4">
+        <div class="col-md-6">
             <label for="validationCustom02" class="form-label">College name</label>
             <input type="text" class="form-control" id="validationCustom02" name="college_name" required value="{{ info.college_name }}">
             <div class="valid-feedback">

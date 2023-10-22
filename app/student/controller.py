@@ -44,6 +44,7 @@ def add():
 def edit_student():
     id_number = request.args.get('id_number')
     form = StudentForm()
+    course_code = studModel.Student.get_course_code()
     student_data = studModel.Student.get_student_by_id(id_number)
 
     if student_data:
@@ -74,7 +75,7 @@ def edit_student():
         else:
             flash("Failed to update student information.", "error")
 
-    return render_template("edit_student.html", form=form, info=student_data_dict)
+    return render_template("edit_student.html", form=form, info=student_data_dict, course=course_code)
 
 @student_bp.route("/student/delete", methods=["POST"])
 def delete_student():

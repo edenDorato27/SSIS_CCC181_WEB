@@ -31,14 +31,20 @@
                 Please enter your First Name.
             </div>
         </div>
-        <!-- Last Name -->
+        
         <div class="col-md-4">
-            <label for="validationCustomUsername" class="form-label">College_code</label>
-            <div class="input-group has-validation">
-                <input type="text" class="form-control" id="validationCustomUsername" name="college_code" required value="{{ info.college_code }}">
-                <div class="invalid-feedback">
-                    Please enter your Last Name.
-                </div>
+            <label for="validationCustom03" class="form-label">College Code</label>
+            <select class="form-select" id="validationCustom03" name="college_code" required>
+                <option value="" selected>Select a college code</option>
+                {% for college in college %}
+                    <option value="{{ college.college_code }}">{{ college.college_code }}</option>
+                {% endfor %}
+            </select>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            <div class="invalid-feedback">
+                Please select a college code.
             </div>
         </div>
         

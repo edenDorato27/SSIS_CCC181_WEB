@@ -42,6 +42,7 @@ def add():
 def edit_course():
     course_code = request.args.get('course_code')
     form = CourseForm()
+    college_code = courseModel.Course.get_college_code()
     course_data = courseModel.Course.get_course_by_id(course_code)
 
     if course_data:
@@ -67,7 +68,7 @@ def edit_course():
         else:
             flash("Failed to update course information.", "error")
 
-    return render_template("edit_course.html", form=form, info=course_data_dict)
+    return render_template("edit_course.html", form=form, info=course_data_dict, college=college_code)
 
 @course_bp.route("/course/delete", methods=["POST"])
 def delete_course():

@@ -11,6 +11,11 @@
     margin-right: 0px;
 }
 
+h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    text-align: center;
+  }  
+
 #popup {
     display: none;
     position: fixed;

@@ -41,15 +41,21 @@
                 </div>
             </div>
         </div>
-        <!-- Course Code -->
         <div class="col-md-4">
             <label for="validationCustom03" class="form-label">Course Code</label>
-            <input type="text" placeholder="e.g., BSCS" class="form-control" id="validationCustom03" name="course_code" required value="{{ info.course_code }}">
+            <select class="form-select" id="validationCustom03" name="course_code" required>
+                <option value="" selected>Select a course code</option>
+                {% for course in course %}
+                    <option value="{{ course.course_code }}">{{ course.course_code }}</option>
+                {% endfor %}
+            </select>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
             <div class="invalid-feedback">
-                Please provide your Course Code.
+                Please select a course code.
             </div>
         </div>
-        <!-- Year -->
         <div class="col-md-4">
             <label for="validationCustom04" class="form-label">Year</label>
             <select class="form-select" id="validationCustom04" name="year_" required>
@@ -68,8 +74,8 @@
             <label for="validationCustom05" class="form-label">Gender</label>
             <select class="form-select" id="validationCustom05" name="gender" required>
                 <option selected disabled value="">Choose...</option>
-                <option value="M" {% if info.gender == 'M' %} selected {% endif %}>M</option>
-                <option value="F" {% if info.gender == 'F' %} selected {% endif %}>F</option>
+                <option value="Male" {% if info.gender == 'Male' %} selected {% endif %}>Male</option>
+                <option value="Female" {% if info.gender == 'Female' %} selected {% endif %}>Female</option>
                 <option value="Others" {% if info.gender == 'Others' %} selected {% endif %}>Others</option>
             </select>
             <div class="invalid-feedback">
