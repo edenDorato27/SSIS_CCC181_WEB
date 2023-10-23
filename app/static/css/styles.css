@@ -16,6 +16,11 @@ h1 {
     text-align: center;
   }  
 
+.navbar-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 25px;
+  } 
+
 #popup {
     display: none;
     position: fixed;

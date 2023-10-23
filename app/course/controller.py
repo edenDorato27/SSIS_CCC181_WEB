@@ -3,7 +3,7 @@ from . import course_bp
 import app.models.course_model as courseModel
 from app.course.forms import CourseForm
 
-headings = ("Course_code", "Course name", "College_code", "Actions")
+headings = ("Course Code", "Course name", "College Code", "Actions")
 
 @course_bp.route('/')
 def home_page():
