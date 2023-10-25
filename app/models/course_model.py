@@ -65,7 +65,7 @@ class Course(object):
     def search_course(cls, query):
         try:
             with mysql.connection.cursor() as cursor:
-                # sql = "SELECT * FROM courses WHERE course_code LIKE %s OR course_name LIKE %s OR college_code LIKE %s"
+                # sql = "SELECT * FROM course WHERE course_code LIKE %s OR course_name LIKE %s OR college_code LIKE %s"
                 # cursor.execute(sql, (f'%{query}%', f'%{query}%', f'%{query}%'))
                 sql = "SELECT * FROM course WHERE course_code = %s OR course_name = %s OR college_code = %s"
                 cursor.execute(sql, (query, query, query))
