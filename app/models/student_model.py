@@ -108,7 +108,9 @@ class Student(object):
     def search_student(cls, query):
         try:
             with mysql.connection.cursor() as cursor:
-                sql = "SELECT * FROM student WHERE id_number LIKE %s OR first_name = %s OR last_name = %s OR course_code = %s OR year_ = %s OR gender = %s"
+                # sql = "SELECT * FROM student WHERE id_number LIKE %s OR first_name LIKE %s OR last_name LIKE %s OR course_code LIKE %s OR year_ LIKE %s OR gender LIKE %s"
+                # cursor.execute(sql, (f'%{query}%', f'%{query}%', f'%{query}%', f'%{query}%', f'%{query}%', f'%{query}%'))
+                sql = "SELECT * FROM student WHERE id_number = %s OR first_name = %s OR last_name = %s OR course_code = %s OR year_ = %s OR gender = %s"
                 cursor.execute(sql, (query, query, query, query, query, query))
                 result = cursor.fetchall()
                 return result
