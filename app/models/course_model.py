@@ -74,6 +74,22 @@ class Course(object):
             return []
         
     @classmethod
+    def filter_course(cls, filter_by, query):
+        try:
+            with mysql.connection.cursor() as cursor:
+                # Construct the SQL query based on the selected column
+                columns = ["course_code", "course_name", "college_code"]
+                if filter_by not in columns:
+                    raise ValueError("Invalid filter column")
+                sql = f"SELECT * FROM course WHERE {filter_by} = %s"
+                cursor.execute(sql, (query,))
+                result = cursor.fetchall()
+                return result
+        except Exception as e:
+            print(f"Error: {e}")
+            return []
+        
+    @classmethod
     def get_course_by_id(cls, course_code):
         cursor = mysql.connection.cursor(dictionary=True)  # Set dictionary=True to return results as dictionaries
         cursor.execute("SELECT * FROM course WHERE course_code = %s", (course_code,))

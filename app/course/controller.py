@@ -86,12 +86,18 @@ def delete_course():
 @course_bp.route('/course/search', methods=['POST'])
 def search_course():
     try:
-        search_query = request.form.get('searchTerm')  # Updated to 'searchTerm'
-        # Perform a database query based on the search_query
-        search_results = courseModel.Course.search_course(search_query)
+        search_query = request.form.get('searchTerm')
+        filter_by = request.form.get('filterBy')  # Get the filterBy parameter
+        
+        if filter_by == 'all':
+            # If filterBy is 'all', perform a general search
+            search_results = courseModel.Course.search_course(search_query)
+        else:
+            # Otherwise, filter based on the selected column
+            search_results = courseModel.Course.filter_course(filter_by, search_query)
+            
         return jsonify(search_results)
     except Exception as e:
         # Handle errors and return an error response
         return jsonify(error=str(e)), 500
-
 

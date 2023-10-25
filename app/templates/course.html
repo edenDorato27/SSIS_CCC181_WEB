@@ -25,6 +25,16 @@
     <div class="mx-2"></div>
     <button class="btn btn-outline-success spaced-button" style="background-color: #541675; color:#FFFFFF; border-color: #541675; width:10%" type="button" id="add-course-button">Add</button>
 </form>  
+    <div class="form-group">
+        <label for="filter-select">FILTER BY:</label>
+        <select class="form-control" id="filter-select">
+            <option value="all">All</option>
+            <option value="course_code">Course Code</option>
+            <option value="course_name">Course Name</option>
+            <option value="college_code">College Code</option>
+            <!-- Add more options as needed -->
+        </select>
+    </div>
   <br/>
   <div style="height:500px; overflow:auto">
     <table class="table table-striped table-hover">
@@ -149,6 +159,7 @@
 
         $("#search-button").click(function() {
             const searchTerm = $("#search-input").val(); // Get the search term from the input field
+            const filterBy = $("#filter-select").val(); // Get the selected filter option
     
             // Make an AJAX request to the search endpoint
             $.ajax({
@@ -157,7 +168,7 @@
                 headers: {
                     "X-CSRFToken": "{{ csrf_token() }}", // Include the CSRF token in the headers
                 },
-                data: { searchTerm: searchTerm },
+                data: { searchTerm: searchTerm, filterBy: filterBy }, // Correctly format the data object
                 success: function(response) {
                     if (Array.isArray(response) && response.length > 0) {
                         updateTable(response);
@@ -175,7 +186,7 @@
                 }
             });
         });
-        
+    
 
         function updateTable(data) {
             console.log("Response received:", data);

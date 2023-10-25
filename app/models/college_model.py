@@ -64,6 +64,22 @@ class College(object):
         except Exception as e:
             print(f"Error: {e}")
             return []
+        
+    @classmethod
+    def filter_college(cls, filter_by, query):
+        try:
+            with mysql.connection.cursor() as cursor:
+                # Construct the SQL query based on the selected column
+                columns = ["college_code", "college_name"]
+                if filter_by not in columns:
+                    raise ValueError("Invalid filter column")
+                sql = f"SELECT * FROM college WHERE {filter_by} = %s"
+                cursor.execute(sql, (query,))
+                result = cursor.fetchall()
+                return result
+        except Exception as e:
+            print(f"Error: {e}")
+            return []
 
     @classmethod
     def unique_code(cls, college_code):

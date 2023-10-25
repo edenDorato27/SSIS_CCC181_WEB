@@ -77,11 +77,16 @@ def delete_college():
 def search_college():
     try:
         search_query = request.form.get('searchTerm')
-        search_results = collegeModel.College.search_college(search_query)
+        filter_by = request.form.get('filterBy')  # Get the filterBy parameter
         
-        if search_results is not None:
-            return jsonify(search_results)
+        if filter_by == 'all':
+            # If filterBy is 'all', perform a general search
+            search_results = collegeModel.College.search_college(search_query)
         else:
-            return jsonify([])
+            # Otherwise, filter based on the selected column
+            search_results = collegeModel.College.filter_college(filter_by, search_query)
+            
+        return jsonify(search_results)
     except Exception as e:
+        # Handle errors and return an error response
         return jsonify(error=str(e)), 500

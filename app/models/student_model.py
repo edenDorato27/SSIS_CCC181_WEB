@@ -108,8 +108,24 @@ class Student(object):
     def search_student(cls, query):
         try:
             with mysql.connection.cursor() as cursor:
-                sql = "SELECT * FROM student WHERE id_number = %s OR first_name = %s OR last_name = %s OR course_code = %s OR year_ = %s OR gender = %s"
+                sql = "SELECT * FROM student WHERE id_number LIKE %s OR first_name = %s OR last_name = %s OR course_code = %s OR year_ = %s OR gender = %s"
                 cursor.execute(sql, (query, query, query, query, query, query))
+                result = cursor.fetchall()
+                return result
+        except Exception as e:
+            print(f"Error: {e}")
+            return []
+    
+    @classmethod
+    def filter_student(cls, filter_by, query):
+        try:
+            with mysql.connection.cursor() as cursor:
+                # Construct the SQL query based on the selected column
+                columns = ["id_number", "first_name", "last_name", "course_code", "year_", "gender"]
+                if filter_by not in columns:
+                    raise ValueError("Invalid filter column")
+                sql = f"SELECT * FROM student WHERE {filter_by} = %s"
+                cursor.execute(sql, (query,))
                 result = cursor.fetchall()
                 return result
         except Exception as e:
