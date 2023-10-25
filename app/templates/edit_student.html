@@ -6,11 +6,13 @@
 {% block content %}
 <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
         <!-- Add a back button to return to the student page -->
-        <a href="{{ url_for('student.student') }}" class="btn btn-secondary mb-3" style="background-color:#541675; border-color:#541675">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-              </svg>
-        </a>        
+        <a href="{{ url_for('student.student') }}" class="btn btn-secondary mb-3" style="background-color: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0);">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-arrow-left btn-outline-dark" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
+            </div>
+        </a>       
     <h1>EDIT STUDENT INFO</h1>
     <br/><br/>
     <form class="row g-3 needs-validation" method="POST" action="{{ url_for('student.edit_student', id_number=info.id_number) }}" novalidate>
@@ -52,7 +54,7 @@
             <select class="form-select" id="validationCustom03" name="course_code" required>
                 <option value="" selected>Select a course code</option>
                 {% for course in course %}
-                    <option value="{{ course.course_code }}">{{ course.course_code }}</option>
+                <option value="{{ course.course_code }}" {% if info.course_code == course.course_code %} selected {% endif %}>{{ course.course_code }}</option>
                 {% endfor %}
             </select>
             <div class="valid-feedback">
@@ -62,14 +64,15 @@
                 Please select a course code.
             </div>
         </div>
+        <!-- Year -->
         <div class="col-md-4">
             <label for="validationCustom04" class="form-label">Year</label>
             <select class="form-select" id="validationCustom04" name="year_" required>
                 <option selected disabled value="">Choose...</option>
-                <option value="1" {% if info.year_ == '1' %} selected {% endif %}>1</option>
-                <option value="2" {% if info.year_ == '2' %} selected {% endif %}>2</option>
-                <option value="3" {% if info.year_ == '3' %} selected {% endif %}>3</option>
-                <option value="4" {% if info.year_ == '4' %} selected {% endif %}>4</option>
+                <option value="1" {% if info.year_ == '1' or info.year_ == 1 %} selected {% endif %}>1</option>
+                <option value="2" {% if info.year_ == '2' or info.year_ == 2 %} selected {% endif %}>2</option>
+                <option value="3" {% if info.year_ == '3' or info.year_ == 3 %} selected {% endif %}>3</option>
+                <option value="4" {% if info.year_ == '4' or info.year_ == 4 %} selected {% endif %}>4</option>
             </select>
             <div class="invalid-feedback">
                 Please select your Year.
