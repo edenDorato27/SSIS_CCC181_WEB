@@ -55,8 +55,9 @@
             <td>{{ info[1] }}</td>
             <td>{{ info[2] }}</td>
             <td>{{ info[3] }}</td>
-            <td>{{ info[4] }}</td>
+            <td>{{ info[4] }}</td> <!-- college code -->
             <td>{{ info[5] }}</td>
+            <td>{{ info[6] }}</td>
             <td class="table__cell">
               <a href="{{ url_for('student.edit_student', id_number=info[0]) }}" class="btn btn-warning" style="background-color: #4895EF; color:#FFFFFF; border-color: #4895EF">Edit</a>
               <button type="button" class="btn btn-danger delete-student-button" data-id="{{ info[0] }}">Delete</button>
@@ -193,40 +194,41 @@
         });
     });
     
-      function updateTable(data) {
-          console.log("Response received:", data);
-          
-          // Clear the existing table rows
-          $("tbody").empty();
-          
-          // Loop through the data and add new rows to the table
-          for (let info of data) {
-              console.log("Row data:", info);  // Log each row's data
-              
-              // Create a new row and append it to the table
-              let newRow = $("<tr class='table__row'></tr>");
-              newRow.append("<td>" + info[0] + "</td>");
-              newRow.append("<td>" + info[1] + "</td>");
-              newRow.append("<td>" + info[2] + "</td>");
-              newRow.append("<td>" + info[3] + "</td>");
-              newRow.append("<td>" + info[4] + "</td>");
-              newRow.append("<td>" + info[5] + "</td>");
-              
-              // Create the buttons
-              let editButton = $("<button type='button' class='btn btn-primary edit-student-button'>Edit</button>");
-              let deleteButton = $("<button type='button' class='btn btn-danger delete-student-button' data-id='" + info[0] + "'>Delete</button>");
-              
-              // Create a cell for the buttons and append them
-              let buttonCell = $("<td class='table__cell'></td>");
-              buttonCell.append(editButton);
-              buttonCell.append("&nbsp;"); // Add a space between buttons
-              buttonCell.append(deleteButton);
-              
-              newRow.append(buttonCell);
-              
-              $("tbody").append(newRow);
-          }
+    function updateTable(data) {
+      console.log("Response received:", data);
+    
+      // Clear the existing table rows
+      $("tbody").empty();
+    
+      // Loop through the data and add new rows to the table
+      for (let info of data) {
+        console.log("Row data:", info);  // Log each row's data
+    
+        // Create a new row and append it to the table
+        let newRow = $("<tr class='table__row'></tr>");
+        newRow.append("<td>" + info[0] + "</td>");
+        newRow.append("<td>" + info[1] + "</td>");
+        newRow.append("<td>" + info[2] + "</td>");
+        newRow.append("<td>" + info[3] + "</td>");
+        newRow.append("<td>" + info[4] + "</td>");  // Append the "college" data
+        newRow.append("<td>" + info[5] + "</td>");  // Append the "year" data
+        newRow.append("<td>" + info[6] + "</td>");  // Append the "gender" data
+    
+        // Create the buttons
+        let editButton = $("<button type='button' class='btn btn-primary edit-student-button'>Edit</button>");
+        let deleteButton = $("<button type='button' class='btn btn-danger delete-student-button' data-id='" + info[0] + "'>Delete</button>");
+    
+        // Create a cell for the buttons and append them
+        let buttonCell = $("<td class='table__cell'></td>");
+        buttonCell.append(editButton);
+        buttonCell.append("&nbsp;"); // Add a space between buttons
+        buttonCell.append(deleteButton);
+    
+        newRow.append(buttonCell);
+    
+        $("tbody").append(newRow);
       }
+    }    
   });
 </script>
 

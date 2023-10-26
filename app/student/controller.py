@@ -3,7 +3,7 @@ from . import student_bp
 import app.models.student_model as studModel
 from app.student.forms import StudentForm
 
-headings = ("ID_Number", "First Name", "Last Name", "Course", "Year", "Gender", "Actions")
+headings = ("ID_Number", "First Name", "Last Name", "Course", "College", "Year", "Gender", "Actions")
 
 @student_bp.route('/')
 def home_page():
@@ -12,7 +12,21 @@ def home_page():
 @student_bp.route('/student')
 def student():
     student_info = studModel.Student.all()
-    return render_template('student.html', headings = headings, data = student_info)
+    for student in student_info:
+        id_number, first_name, last_name, course_code, year_, gender = student
+
+        # Fetch the college codes for the current student's id_number
+        college = studModel.Student.get_all_college(id_number)
+
+        if college:
+            college_code = college[0]['college_code']
+        else:
+            college_code = ""  # Set to an empty string if no college code is found
+
+        # Update the student data with the college code
+        student_info[student_info.index(student)] = [id_number, first_name, last_name, course_code, college_code, year_, gender]
+
+    return render_template('student.html', headings=headings, data=student_info)
 
 @student_bp.route('/student/add', methods=['POST','GET'])
 def add():
