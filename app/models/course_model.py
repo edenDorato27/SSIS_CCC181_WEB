@@ -65,32 +65,43 @@ class Course(object):
     def search_course(cls, query):
         try:
             with mysql.connection.cursor() as cursor:
-                # sql = "SELECT * FROM course WHERE course_code LIKE %s OR course_name LIKE %s OR college_code LIKE %s"
-                # cursor.execute(sql, (f'%{query}%', f'%{query}%', f'%{query}%'))
-                sql = "SELECT * FROM course WHERE course_code = %s OR course_name = %s OR college_code = %s"
-                cursor.execute(sql, (query, query, query))
+                sql = """
+                    SELECT course.course_code, course.course_name, course.college_code, college.college_name
+                    FROM course
+                    LEFT JOIN college ON course.college_code = college.college_code
+                    WHERE course.course_code LIKE %s 
+                    OR course.course_name LIKE %s 
+                    OR course.college_code LIKE %s 
+                    OR college.college_name LIKE %s
+                """
+                cursor.execute(sql, (f"%{query}%", f"%{query}%", f"%{query}%", f"%{query}%"))
                 result = cursor.fetchall()
                 return result
         except Exception as e:
             print(f"Error: {e}")
             return []
-        
+
     @classmethod
     def filter_course(cls, filter_by, query):
         try:
             with mysql.connection.cursor() as cursor:
                 # Construct the SQL query based on the selected column
-                columns = ["course_code", "course_name", "college_code"]
+                columns = ["course_code", "course_name", "college_code", "college_name"]
                 if filter_by not in columns:
                     raise ValueError("Invalid filter column")
-                sql = f"SELECT * FROM course WHERE {filter_by} = %s"
+                sql = f"""
+                    SELECT course.course_code, course.course_name, course.college_code, college.college_name
+                    FROM course
+                    LEFT JOIN college ON course.college_code = college.college_code
+                    WHERE {filter_by} = %s
+                """
                 cursor.execute(sql, (query,))
                 result = cursor.fetchall()
                 return result
         except Exception as e:
             print(f"Error: {e}")
             return []
-        
+
     @classmethod
     def get_course_by_id(cls, course_code):
         cursor = mysql.connection.cursor(dictionary=True)  # Set dictionary=True to return results as dictionaries
@@ -117,6 +128,24 @@ class Course(object):
             return all_colleges
         except Exception as e:
             print(f"Error obtaining college_code: {e}")
+            return False
+        
+    @classmethod
+    def get_all_college_name(cls, course_code):
+        try:
+            cursor = mysql.connection.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT college.college_name
+                FROM college
+                JOIN course
+                ON course.college_code = college.college_code
+                WHERE course.course_code = %s
+            """, (course_code,))
+            all_colleges = cursor.fetchall()
+            cursor.close()
+            return all_colleges
+        except Exception as e:
+            print(f"Error obtaining college_name: {e}")
             return False
         
         

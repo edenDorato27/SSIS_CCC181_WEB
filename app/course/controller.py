@@ -3,7 +3,7 @@ from . import course_bp
 import app.models.course_model as courseModel
 from app.course.forms import CourseForm
 
-headings = ("Course Code", "Course Name", "College Code", "Actions")
+headings = ("Course Code", "Course Name", "College Code" , "College Name", "Actions")
 
 @course_bp.route('/')
 def home_page():
@@ -12,6 +12,20 @@ def home_page():
 @course_bp.route('/course')
 def course():
     course_info = courseModel.Course.all()
+    for course in course_info:
+        course_code, course_name, college_code = course
+        
+        # Fetch the college codes for the current student's id_number
+        college = courseModel.Course.get_all_college_name(course_code)
+
+        if college:
+            college_name = college[0]['college_name']
+        else:
+            college_name = ""  # Set to an empty string if no college code is found
+
+        # Update the student data with the college code
+        course_info[course_info.index(course)] = [course_code, course_name, college_code, college_name]
+         
     return render_template('course.html', headings = headings, data = course_info)
 
 @course_bp.route('/course/add', methods=['POST','GET'])

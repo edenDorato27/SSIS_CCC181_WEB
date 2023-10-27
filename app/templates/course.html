@@ -51,6 +51,7 @@
             <td>{{ info[0] }}</td>
             <td>{{ info[1] }}</td>
             <td>{{ info[2] }}</td>
+            <td>{{ info[3] }}</td>
             <td class="table__cell">
               <a href="{{ url_for('course.edit_course', course_code=info[0]) }}" class="btn btn-warning" style="background-color: #4895EF; color:#FFFFFF; border-color: #4895EF">Edit</a>
               <button type="button" class="btn btn-danger delete-button" data-id="{{ info[0] }}">Delete</button>
@@ -203,6 +204,7 @@
                 newRow.append("<td>" + info[0] + "</td>");
                 newRow.append("<td>" + info[1] + "</td>");
                 newRow.append("<td>" + info[2] + "</td>");
+                newRow.append("<td>" + info[3] + "</td>");
 
                 // Create the buttons
                 let editButton = $("<button type='button' class='btn btn-primary edit-course-button'>Edit</button>");
