@@ -1,32 +1,39 @@
 from app import mysql
+import cloudinary
+import cloudinary.uploader
+from cloudinary.uploader import upload, destroy
+import re
 
 
 
-class Student(object):
+class Student:
 
-    def __init__(self, id_number=None, first_name=None, last_name=None, course_code=None, year_=None, gender=None):
+    def __init__(self, id_number=None, first_name=None, last_name=None, course_code=None, year_=None, gender=None, profile_pic=None):
         self.id_number = id_number
         self.first_name = first_name
         self.last_name = last_name
         self.course_code = course_code
         self.year_ = year_
         self.gender = gender
+        self.profile_pic = profile_pic
 
-    def add(self):
-        """
-        Add a new student to the database.
-
-        Returns:
-            bool: True if the addition was successful, False otherwise.
-        """
+    @classmethod
+    def add(cls, id_number, first_name, last_name, course_code, year_, gender, profile_pic):
         try:
-            cursor = mysql.connection.cursor()
-            sql = "INSERT INTO student (id_number, first_name, last_name, course_code, year_, gender) VALUES (%s, %s, %s, %s, %s, %s)"
-            cursor.execute(sql, (self.id_number, self.first_name, self.last_name, self.course_code, self.year_, self.gender))
+            with mysql.connection.cursor() as cursor:
+                if profile_pic:
+                    upload_result = cloudinary.uploader.upload(profile_pic, folder="SSIS", resource_type='image')
+                    profile_pic_url = upload_result['secure_url']
+
+                    sql = "INSERT INTO student (id_number, first_name, last_name, course_code, year_, gender, profile_pic) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                    cursor.execute(sql, (id_number, first_name, last_name, course_code, year_, gender, profile_pic_url))
+                else:
+                    sql = "INSERT INTO student (id_number, first_name, last_name, course_code, year_, gender) VALUES (%s, %s, %s, %s, %s, %s)"
+                    cursor.execute(sql, (id_number, first_name, last_name, course_code, year_, gender))
+
             mysql.connection.commit()
             return True
-        except Exception as e:
-            # You might want to log this error for debugging purposes
+        except mysql.connector.Error as e:
             print(f"Error adding student: {e}")
             return False
     
@@ -40,12 +47,19 @@ class Student(object):
 
     @classmethod
     def all(cls):
-        cursor = mysql.connection.cursor()
+        try:
+            cursor = mysql.connection.cursor(dictionary=True)
+            sql = "SELECT student.*, course.course_code, college.college_code FROM student INNER JOIN course ON student.course_code = course.course_code INNER JOIN college ON course.college_code = college.college_code;"
+            cursor.execute(sql)
+            result = cursor.fetchall()
 
-        sql = "SELECT * from student"
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        return result
+            for student in result:
+                student['profile_pic'] = student['profile_pic']
+                
+            return result
+        except Exception as e:
+            print(f"Error fetching all students: {e}")
+            return []
 
     @classmethod
     def delete(cls, id_number):
@@ -70,29 +84,31 @@ class Student(object):
             return False
   
     @classmethod
-    def update(cls, id_number, new_first_name, new_last_name, new_course_code, new_year_, new_gender):
-        """
-        Update the student's information in the database.
-
-        Args:
-            id_number (str): The ID number of the student to be updated.
-            new_first_name (str): The new first name.
-            new_last_name (str): The new last name.
-            new_course_code (str): The new course code.
-            new_year_ (int): The new year.
-            new_gender (str): The new gender.
-
-        Returns:
-            bool: True if the update was successful, False otherwise.
-        """
+    def update(cls, id_number, new_first_name, new_last_name, new_course_code, new_year_, new_gender, new_profile_pic):
         try:
             cursor = mysql.connection.cursor()
-            sql = "UPDATE student SET first_name = %s, last_name = %s, course_code = %s, year_ = %s, gender = %s WHERE id_number = %s"
-            cursor.execute(sql, (new_first_name, new_last_name, new_course_code, new_year_, new_gender, id_number))
+
+            existing_student = cls.get_student_by_id(id_number)
+            
+            if new_profile_pic:
+                result = upload(new_profile_pic, folder="SSIS", resource_type='image')
+                new_profile_pic_url = result['secure_url']
+                
+                old_profile_pic_url = existing_student['profile_pic']
+                if old_profile_pic_url:
+                    public_id = old_profile_pic_url.split('/')[-1].split('.')[0]
+                    print("public_id: ", public_id)
+                    destroy("SSIS/" + public_id)
+
+            else:
+                new_profile_pic_url = None  # Ensuring this is set to None if no new picture is provided
+
+            sql = "UPDATE student SET first_name = %s, last_name = %s, course_code = %s, year_ = %s, gender = %s, profile_pic = %s WHERE id_number = %s"
+            cursor.execute(sql, (new_first_name, new_last_name, new_course_code, new_year_, new_gender, new_profile_pic_url, id_number))
+
             mysql.connection.commit()
             return True
         except Exception as e:
-            # You might want to log this error for debugging purposes
             print(f"Error updating student: {e}")
             return False
 
@@ -107,20 +123,20 @@ class Student(object):
     @classmethod
     def search_student(cls, query):
         try:
-            with mysql.connection.cursor() as cursor:
+            with mysql.connection.cursor(dictionary=True) as cursor:
                 sql = """
-                    SELECT student.id_number, student.first_name, student.last_name, student.course_code, course.college_code, student.year_, student.gender
+                    SELECT student.id_number, student.first_name, student.last_name, student.course_code, course.college_code, student.year_, student.gender, student.profile_pic
                     FROM student
                     JOIN course ON student.course_code = course.course_code
-                    WHERE student.id_number = %s
-                    OR student.first_name = %s
-                    OR student.last_name = %s
-                    OR student.course_code = %s
-                    OR course.college_code = %s
-                    OR student.year_ = %s
-                    OR student.gender = %s
+                    WHERE student.id_number LIKE %s
+                    OR student.first_name LIKE %s
+                    OR student.last_name LIKE %s
+                    OR student.course_code LIKE %s
+                    OR course.college_code LIKE %s
+                    OR student.year_ LIKE %s
+                    OR student.gender LIKE %s
                 """
-                cursor.execute(sql, (query, query, query, query, query, query, query))
+                cursor.execute(sql, (f"%{query}%", f"%{query}%", f"%{query}%", f"%{query}%", f"%{query}%", f"%{query}%", f"%{query}%"))
                 result = cursor.fetchall()
                 return result
         except Exception as e:
@@ -130,21 +146,21 @@ class Student(object):
     @classmethod
     def filter_student(cls, filter_by, query):
         try:
-            with mysql.connection.cursor() as cursor:
+            with mysql.connection.cursor(dictionary=True) as cursor:
                 # Construct the SQL query based on the selected column
                 columns = ["id_number", "first_name", "last_name", "course_code", "college_code", "year_", "gender"]
                 if filter_by not in columns:
                     raise ValueError("Invalid filter column")
                 if filter_by == "college_code":
                     sql = f"""
-                        SELECT student.id_number, student.first_name, student.last_name, student.course_code, course.college_code, student.year_, student.gender
+                        SELECT student.id_number, student.first_name, student.last_name, student.course_code, course.college_code, student.year_, student.gender, student.profile_pic
                         FROM student
                         JOIN course ON student.course_code = course.course_code
                         WHERE course.college_code = %s
                     """
                 else:
                     sql = f"""
-                        SELECT student.id_number, student.first_name, student.last_name, student.course_code, course.college_code, student.year_, student.gender
+                        SELECT student.id_number, student.first_name, student.last_name, student.course_code, course.college_code, student.year_, student.gender, student.profile_pic
                         FROM student
                         JOIN course ON student.course_code = course.course_code
                         WHERE student.{filter_by} = %s

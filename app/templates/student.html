@@ -35,7 +35,6 @@
         <option value="course_code">Course Code</option>
         <option value="year_">Year</option>
         <option value="gender">Gender</option>
-        <!-- Add more options as needed -->
     </select>
   </div>
   <br/>
@@ -51,16 +50,23 @@
       <tbody>
         {% for info in data %}
           <tr class="table__row">
-            <td>{{ info[0] }}</td>
-            <td>{{ info[1] }}</td>
-            <td>{{ info[2] }}</td>
-            <td>{{ info[3] }}</td>
-            <td>{{ info[4] }}</td> <!-- college code -->
-            <td>{{ info[5] }}</td>
-            <td>{{ info[6] }}</td>
+            <td>
+              {% if info.profile_pic %}
+                  <img src="{{ info.profile_pic }}" alt="Profile Pic" class="img-thumbnail" style="height: 50px; width: 50px">
+              {% else %}
+                  <img src="{{ url_for('static', filename='img/default_profilepic2.png') }}">
+              {% endif %}
+            </td>
+            <td>{{ info.id_number }}</td>
+            <td>{{ info.first_name }}</td>
+            <td>{{ info.last_name }}</td>
+            <td>{{ info.course_code }}</td>
+            <td>{{ info.college_code }}</td> <!-- college code -->
+            <td>{{ info.year_ }}</td>
+            <td>{{ info.gender }}</td>
             <td class="table__cell">
-              <a href="{{ url_for('student.edit_student', id_number=info[0]) }}" class="btn btn-warning" style="background-color: #4895EF; color:#FFFFFF; border-color: #4895EF">Edit</a>
-              <button type="button" class="btn btn-danger delete-student-button" data-id="{{ info[0] }}">Delete</button>
+              <a href="{{ url_for('student.edit_student', id_number=info.id_number) }}" class="btn btn-warning" style="background-color: #4895EF; color:#FFFFFF; border-color: #4895EF">Edit</a>
+              <button type="button" class="btn btn-danger delete-student-button" data-id="{{ info.id_number }}">Delete</button>
             </td>
           </tr>
         {% endfor %}
@@ -159,7 +165,7 @@
       $(document).on("click", ".edit-student-button", function() {
           // Get the ID of the student associated with the clicked "Edit" button
           const studentId = $(this).closest("tr").find("td:first-child").text(); // Assuming the ID is in the first <td> of the row
-      
+
           // Redirect to the edit page with the student ID
           window.location.href = "/student/edit?id_number=" + studentId;
       });
@@ -206,17 +212,30 @@
     
         // Create a new row and append it to the table
         let newRow = $("<tr class='table__row'></tr>");
-        newRow.append("<td>" + info[0] + "</td>");
-        newRow.append("<td>" + info[1] + "</td>");
-        newRow.append("<td>" + info[2] + "</td>");
-        newRow.append("<td>" + info[3] + "</td>");
-        newRow.append("<td>" + info[4] + "</td>");  // Append the "college" data
-        newRow.append("<td>" + info[5] + "</td>");  // Append the "year" data
-        newRow.append("<td>" + info[6] + "</td>");  // Append the "gender" data
+
+        let profilePicCell = $("<td></td>");
+          if (info.profile_pic) {
+            profilePicCell.append("<img src='" + info.profile_pic + "' alt='Profile Pic' class='img-thumbnail' style='height: 50px; width: 50px'>");
+          } else {
+                    // Use a default image if no profile picture is available
+            profilePicCell.append("<img src='{{ url_for('static', filename='img/default_profilepic2.png') }}' alt='Default Profile Pic' class='img-thumbnail' style='max-width: 100px;'>");
+          }
+        newRow.append(profilePicCell);
+
+        newRow.append("<td>" + info.id_number + "</td>"); // Assuming id_number is in your data
+        newRow.append("<td>" + info.first_name + "</td>"); // Assuming first_name is in your data
+        newRow.append("<td>" + info.last_name + "</td>"); // Assuming last_name is in your data
+        newRow.append("<td>" + info.course_code + "</td>"); // Assuming course_code is in your data
+        newRow.append("<td>" + info.college_code + "</td>"); // Assuming college_code is in your data
+        newRow.append("<td>" + info.year_ + "</td>"); // Assuming year_ is in your data
+        newRow.append("<td>" + info.gender + "</td>"); // Assuming gender is in your data
     
         // Create the buttons
-        let editButton = $("<button type='button' class='btn btn-primary edit-student-button'>Edit</button>");
-        let deleteButton = $("<button type='button' class='btn btn-danger delete-student-button' data-id='" + info[0] + "'>Delete</button>");
+         // Updated code for the edit button
+        let editUrl = '/student/edit?id_number=' + info.id_number;
+        let editButton = $("<a href='" + editUrl + "' class='btn btn-primary'>Edit</a>");
+        //let editButton = $("<button type='button' class='btn btn-primary edit-student-button'>Edit</button>");
+        let deleteButton = $("<button type='button' class='btn btn-danger delete-student-button' data-id='" + info.id_number + "'>Delete</button>");
     
         // Create a cell for the buttons and append them
         let buttonCell = $("<td class='table__cell'></td>");

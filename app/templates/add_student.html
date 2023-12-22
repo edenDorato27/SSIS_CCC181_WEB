@@ -5,183 +5,273 @@
 
 {% block content %}
 
-{%for message in get_flashed_messages() %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {%for message in get_flashed_messages() %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <strong>{{ message }}</strong>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-{% endfor %}
+    {% endfor %}
 
-<div class="shadow p-3 mb-5 bg-body-tertiary rounded">
-
-    <a href="{{ url_for('student.student') }}" class="btn btn-secondary mb-3" style="background-color: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0);">
-        <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-arrow-left btn-outline-dark" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-            </svg>
-        </div>
-    </a>
-    
-    <h1>ADD STUDENT INFO</h1>
-    <br/><br/>
-    <form class="row g-3 needs-validation" method="POST" action="/student/add" novalidate>
-        <!-- ID Number -->
-        <div class="col-md-4">
-            <label for="validationCustom01" class="form-label">ID Number</label>
-            <input type="text" placeholder="YYYY-NNNN" class="form-control" id="validationCustom01" name="id_number" required>
-            <div class="valid-feedback">
-                Looks good!
+    <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+        <a href="{{ url_for('student.student') }}" class="btn btn-secondary mb-3" style="background-color: rgba(255, 255, 255, 0); border-color: rgba(255, 255, 255, 0);">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-arrow-left btn-outline-dark" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
             </div>
-            <div class="invalid-feedback">
-                Please enter your ID Number.
-            </div>
-        </div>
-        <!-- First Name -->
-        <div class="col-md-4">
-            <label for="validationCustom02" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="validationCustom02" name="first_name" required>
-            <div class="valid-feedback">
-                Looks good!
-            </div>
-            <div class="invalid-feedback">
-                Please enter your First Name.
-            </div>
-        </div>
-        <!-- Last Name -->
-        <div class="col-md-4">
-            <label for="validationCustomUsername" class="form-label">Last Name</label>
-            <div class="input-group has-validation">
-                <input type="text" class="form-control" id="validationCustomUsername" name="last_name" required>
-                <div class="invalid-feedback">
-                    Please enter your Last Name.
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4">
-            <label for="validationCustom03" class="form-label">Course Code</label>
-            <select class="form-select" id="validationCustom03" name="course_code" required>
-                <option value="" selected>Select a course code</option>
-                {% for course in course %}
-                    <option value="{{ course.course_code }}">{{ course.course_code }}</option>
-                {% endfor %}
-            </select>
-            <div class="valid-feedback">
-                Looks good!
-            </div>
-            <div class="invalid-feedback">
-                Please select a course code.
-            </div>
-        </div>
-
-        <!-- Year -->
-        <div class="col-md-4">
-            <label for="validationCustom04" class="form-label">Year</label>
-            <select class="form-select" id="validationCustom04" name="year_" required>
-                <option selected disabled value="">Choose...</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-            </select>
-            <div class "invalid-feedback">
-                Please select your Year.
-            </div>
-        </div>
-        <!-- Gender -->
-        <div class="col-md-4">
-            <label for="validationCustom05" class="form-label">Gender</label>
-            <select class="form-select" id="validationCustom05" name="gender" required>
-                <option selected disabled value="">Choose...</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Others</option>
-            </select>
-            <div class="invalid-feedback">
-                Please select your Gender.
-            </div>
-        </div>
+        </a>     
+        <h1>ADD STUDENT INFO</h1>   
         <br/><br/>
-        <!-- Checkbox for input validation -->
-        <div class="col-12">
-            <div class="form-check">
-                <br/>
-                <input class="form-check-input" type="checkbox" value="" id="invalidCheck" name="input_correct" required>
-                <label class="form-check-label" for="invalidCheck">
-                    Please check if your input is correct.
-                </label>
-                <div class="invalid-feedback">
-                    You must agree before submitting.
-                </div>
+        <form class="row g-3 needs-validation" enctype="multipart/form-data" method="POST" action="/student/add" novalidate>
+            {{ form.hidden_tag() }}
+
+            <!-- ID Number -->
+            <div class="col-md-4">
+                {{ form.id_number.label(for="validationCustom01", class="form-label") }}
+                {{ form.id_number(id="validationCustom01", class="form-control", placeholder="YYYY-NNNN", required=True) }}
             </div>
-        </div>
-        <div class="col-12">
-            <!-- Add the CSRF token input here -->
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button class="btn btn-outline-dark" type="submit">Submit</button>
-        </div>
-    </form>
-</div>
 
-<!-- Include these script tags -->
-<script src="{{ url_for('static', filename='javascript/JQ.js') }}"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- First Name -->
+            <div class="col-md-4">
+                <label for="validationCustom02" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="validationCustom02" name="first_name" required>
+            </div>
 
-<script>
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
-    (() => {
-        'use strict'
+            <!-- Last Name -->
+            <div class="col-md-4">
+                <label for="validationCustom03" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="validationCustom03" name="last_name" required>
+            </div>
+            <!-- Course Code -->
+            <div class="col-md-4">
+                <label for="validationCustom04" class="form-label">Course Code</label>
+                <select class="form-select" id="validationCustom04" name="course_code" required>
+                    <option value="" selected>Select a course</option>
+                    {% for course in course %}
+                        <option value="{{ course.course_code }}">{{ course.course_code }}</option>
+                    {% endfor %}
+                </select>
+            </div>                        
+            <!-- Year -->
+            <div class="col-md-4">
+                <label for="5" class="form-label">Year</label>
+                <select class="form-select" id="validationCustom05" name="year_" required>
+                    <option selected disabled value="">Choose...</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                </select>
+            </div>
+            <!-- Gender -->
+            <div class="col-md-4">
+                <label for="validationCustom07" class="form-label">Gender</label>
+                <select class="form-select" id="validationCustom07" name="gender" required>
+                    <option selected disabled value="">Choose...</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Others</option>
+                </select>
+            </div>
+
+            <!-- File Upload -->
+            <div class="col-md-4">
+                {{ form.profile_pic.label(for="validationCustom06", class="form-label", name = "profile_pic") }} </br>
+                {{ form.profile_pic(id="validationCustom06", class="form-control-file", accept=".jpg, .jpeg, .png") }}
+                <div id="image-preview-container" style="margin-top: 10px;"></div>
+            </div>
+
+            <div class="col-12">
+            </br></br>
+                <!-- Add the CSRF token input here -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-outline-dark" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Include these script tags -->
+    <script src="{{ url_for('static', filename='javascript/JQ.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        /* Custom style for error messages */
+        .error-message {
+            color: red;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+        }
     
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        const forms = document.querySelectorAll('.needs-validation')
+        /* Custom style for success messages */
+        .success-message {
+            color: #28a745; /* Bootstrap success color */
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+        }
+    </style>
     
-        // Loop over them and prevent submission
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
+        <script>
+            $(document).ready(function () {
+                // Add validation rules for specific fields if needed
+                $('.needs-validation').validate({
+                    rules: {
+                        id_number: {
+                            required: true,
+                            minlength: 9,
+                            maxlength: 20,
+                            // Add custom validation method for ID number format
+                            validateIdNumberFormat: true
+                        },
+                        // Add other validation rules for other fields, if needed
+                    },
+                    messages: {
+                        id_number: {
+                            required: 'Please enter the ID Number.',
+                            minlength: 'ID Number should be at least 9 characters.',
+                            maxlength: 'ID Number should be at most 20 characters.',
+                            validateIdNumberFormat: 'ID Number should follow this format "XXXX-XXXX".The X being a number.'
+                        },
+                        // Add other custom error messages for other fields, if needed
+                    },
+                    errorPlacement: function (error, element) {
+                        // Append error message with custom style to the element
+                        error.addClass('error-message');
+                        error.insertAfter(element);
+                    },
+                    highlight: function (element, errorClass, validClass) {
+                        // Highlight the input field with a red border on error
+                        $(element).addClass(errorClass).removeClass(validClass);
+                    },
+                    unhighlight: function (element, errorClass, validClass) {
+                        // Remove the red border on input field when error is fixed
+                        $(element).removeClass(errorClass).addClass(validClass);
+                    },
+                    submitHandler: function (form) {
+                        // Form is valid, show success message and submit
+                        alert('Looks good!');
+                        form.submit();
+                    },
+                    invalidHandler: function (form, validator) {
+                        // Form is invalid, show an alert
+                       alert('Form validation failed. Please check the highlighted fields.') ;
+                    }
+                });
+        
+                document.addEventListener("DOMContentLoaded", function () {
+                    // Select the form and the file input
+                    const form = document.querySelector('.needs-validation');
+                    const fileInput = document.getElementById('validationCustom06');
+            
+                    // Add a submit event listener to the form
+                    form.addEventListener('submit', function (event) {
+                        // Check if the file input has a selected file
+                        if (fileInput.required && fileInput.files.length === 0) {
+                            // Prevent form submission
+                            event.preventDefault();
+                            event.stopPropagation();
+            
+                            // Display an alert or perform any action you prefer
+                            alert('Please select a profile picture.');
+                        }
+                    });
+                });
+                
+                // Additional validation for file upload and image preview
+                $('#validationCustom06').on('input', function () {
+                    const maxFileSizeMB = 1; // Maximum file size allowed in MB
+                    const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif']; // Allowed image MIME types
+
+                    if (this.files.length > 0) {
+                        const fileSizeMB = this.files[0].size / (1024 * 1024); // Convert bytes to MB
+                        const fileType = this.files[0].type;
+
+                        if (fileSizeMB > maxFileSizeMB) {
+                            // File size exceeds the limit, show an alert
+                            alert('Please upload a picture less than ' + maxFileSizeMB + 'MB.');
+                            this.value = ''; // Clear the file input
+                            return; // Exit the function without setting custom validity
+                        } else if (!allowedImageTypes.includes(fileType)) {
+                            // File type is not allowed, show an alert
+                            alert('Please upload a valid image file (JPEG, PNG, GIF).');
+                            this.value = ''; // Clear the file input
+                            return; // Exit the function without setting custom validity
+                        } else {
+                            this.setCustomValidity('');
+                            // Display image preview
+                            displayImagePreview(this.files[0]);
+                        }
+                    } else {
+                        this.setCustomValidity('Please upload a file.');
+                        // Clear image preview
+                        $('#image-preview-container').empty();
+                        // Alert the user to upload a photo
+                        alert('Please upload a photo.');
+                    }
+                });
+
+
+                // Function to display image preview
+                const displayImagePreview = (file) => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const imagePreview = $('<img>').attr({
+                            src: e.target.result,
+                            alt: 'Image Preview',
+                            class: 'img-thumbnail',
+                            style: 'max-width: 100%;'
+                        });
+                        $('#image-preview-container').html(imagePreview);
+                    };
+                    reader.readAsDataURL(file);
+                };
+
+        
+                // Example starter JavaScript for disabling form submissions if there are invalid fields
+                $('.needs-validation').submit(function (event) {
+                    console.log('Form submit event triggered');
+                    if (!$(this).valid()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        console.log('Form validation failed');
+                        alert('Form validation failed. Please check the highlighted fields.');
+                    } else {
+                        console.log('Form validation passed');
+                    }
+        
+                    $(this).addClass('was-validated');
+                });
+        
+                // Function to add the CSRF token to form data
+                const addCSRFTokenToFormData = (form) => {
+                    const csrfToken = $('input[name=csrf_token]').val();
+                    if (csrfToken) {
+                        const csrfField = $('<input>').attr({
+                            type: 'hidden',
+                            name: 'csrf_token',
+                            value: csrfToken
+                        });
+                        form.append(csrfField);
+                    }
+                };
+        
+                // Add CSRF token after the form
+                $('.needs-validation').submit(function () {
+                    console.log('Form submit event triggered');
+                    if ($(this).valid()) {
+                        // Add the CSRF token to the form data
+                        addCSRFTokenToFormData($(this));
+                        console.log('Form validation passed');
+                    }
+                });
+        
+                // Custom validation method for ID number format
+                $.validator.addMethod('validateIdNumberFormat', function (value, element) {
+                    return /^(?:\d{4}-\d{4})$/.test(value);
+                }, 'ID Number should only contain 4 numbers at first, then "-", and last four numbers');
+            });
+        </script>
     
-                form.classList.add('was-validated')
-            }, false)
-        })
-    })();
     
-    // Add this JavaScript block after the form
-    (() => {
-        'use strict';
-    
-        // Function to add the CSRF token to form data
-        const addCSRFTokenToFormData = (form) => {
-            const csrfToken = document.querySelector('input[name=csrf_token]');
-            if (csrfToken) {
-                const csrfField = document.createElement('input');
-                csrfField.type = 'hidden';
-                csrfField.name = 'csrf_token';
-                csrfField.value = csrfToken.value;
-                form.appendChild(csrfField);
-            }
-        };
-    
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        const forms = document.querySelectorAll('.needs-validation');
-    
-        // Loop over them and prevent submission
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                } else {
-                    // Add the CSRF token to the form data
-                    addCSRFTokenToFormData(form);
-                }
-    
-                form.classList.add('was-validated');
-            }, false);
-        });
-    })();  
-</script>
 {% endblock %}

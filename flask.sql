@@ -23,12 +23,13 @@ USE `ssis_web`;
 -- Dumping structure for table ssis_web student
 DROP TABLE IF EXISTS `student`;
 CREATE TABLE IF NOT EXISTS 'student'(
-  'id_number' varchar(255) NOT NULL PRIMARY KEY,
-  'first_name' varchar(255) DEFAULT NULL,
-  'last_name' varchar(255) DEFAULT NULL,
-  'course_code' varchar(255) NOT NULL,
-  'year_' int DEFAULT NULL,
-  'gender' varchar(255) DEFAULT NULL,
+  `id_number` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`first_name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`last_name` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`course_code` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`year_` INT(10) NULL DEFAULT NULL,
+	`gender` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
+	`profile_pic` TEXT NULL DEFAULT NULL COLLATE 'utf8mb4_0900_ai_ci',
   FOREIGN KEY ('course_code') REFERENCES 'course'('course_code') ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
